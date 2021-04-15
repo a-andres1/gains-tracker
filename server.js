@@ -52,13 +52,7 @@ app.get("/exercise", (req,res) => {
   res.sendFile(path.join(__dirname, "./public/exercise.html"));
 });
 
-// api put route
-app.put("/api/workouts/:id", (req,res) => {
-  Workout.save({})
-  .then((updatedWorkout) => {
-    res.json(updatedWorkout)
-  })
-});
+
 
 
 // Listen on port 3000
