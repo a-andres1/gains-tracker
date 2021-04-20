@@ -53,6 +53,36 @@ app.get("/exercise", (req,res) => {
 });
 
 
+// api put route
+app.put("/api/workouts/:id", (req,res) => {
+
+// use this
+  // Model.findById(id, function (err, doc) {
+//   if (err) ..
+//   doc.name = 'jason bourne';
+//   doc.save(callback);
+// });
+  console.log(req.params.id);
+  // after updateOne, pass in the params you want to edit, go find it first. 
+  db.Workout.findOneAndUpdate()
+  
+  db.Workout.updateOne({_id: req.params.id}, (err, workout) => {
+   if (err) {
+     console.log(err);
+     res.status(500).json(err);
+   } else {
+     res.json(workout);
+   }
+  })
+ 
+});
+
+// api post route
+
+// app.post("/api/workouts"
+  
+  
+// })
 
 
 // Listen on port 3000
