@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const logger = require("morgan");
 const db = require("./models");
 const path = require("path");
-const { rawListeners } = require("./models/Workout");
+const Workout = require("./models/Workout");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,8 +28,9 @@ mongoose.connect(process.env.MONGODB_URI || "mongodb://localhost/workout", { use
 
 // // api route
 app.get("/api/workouts", (req,res) => {
-  db.Workout.find({})
+  Workout.find({})
     .then(dataStuff => {
+      console.log(dataStuff)
       res.json(dataStuff)
     });
 });
@@ -41,7 +42,7 @@ app.get("/stats", (req,res) => {
 
 // api route
 app.get("/api/workouts/range", (req, res) => {
-  db.Workout.find({})
+  Workout.find({})
   .then(data => {
     res.json(data)
   });
@@ -55,18 +56,8 @@ app.get("/exercise", (req,res) => {
 
 // api put route
 app.put("/api/workouts/:id", (req,res) => {
-
-// use this
-  // Model.findById(id, function (err, doc) {
-//   if (err) ..
-//   doc.name = 'jason bourne';
-//   doc.save(callback);
-// });
   console.log(req.params.id);
-  // after updateOne, pass in the params you want to edit, go find it first. 
-  db.Workout.findOneAndUpdate()
-  
-  db.Workout.updateOne({_id: req.params.id}, (err, workout) => {
+  db.Workout.updateOne((err, workout) => {
    if (err) {
      console.log(err);
      res.status(500).json(err);
@@ -78,11 +69,16 @@ app.put("/api/workouts/:id", (req,res) => {
 });
 
 // api post route
-
-// app.post("/api/workouts"
-  
-  
-// })
+app.post("/api/workouts", ({body}, res) => {
+  db.Workout.create(body)
+    .then(({_id}) => db.Workout.findOneAndUpdate({}, { $push: { workout: _id } }, { new: true }))
+    .then(dbWorkout => {
+      res.json(dbWorkout);
+    })
+    .catch(err => {
+      res.json(err);
+    });
+});
 
 
 // Listen on port 3000
